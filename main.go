@@ -17,26 +17,43 @@ var kvSep = "="
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Версия программы",
+	Short: "Version of program",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Версия %s\n", Version)
+		fmt.Printf("Remap version: %s\n", Version)
 	},
 }
 
 var remapCmd = &cobra.Command{
 	Use:   "remap map file",
-	Short: "Заменяет одно на другое",
-	Long: `Производит замену в файлах и вывожу результат в stdout
+	Short: "Remap just replaces all keys by it's values in a passed file and send it to stdout",
+	Long: `How to use
 
-	map - путь до файла с мапкой для замены. Пример содержимого файла:
+	remap <map> <file>
 
-		<api_url> = https://api.com/
+	Remap just replaces all keys by it's values in a passed file and send it to stdout
 
-	В этом случае, если в файле [file] встретится строка "<api_url>",
-	то она будет заменена на "https://api.com/"
+	For example, we have a file file.conf:
 
-	Здесь важно то, что ключ - это имя параметра, который нужно заменить.
-	Как ключ написан, так и будет производиться поиск. 
+		API_URL=<api_url>
+		API_KEY=<api_key>
+
+	We need to replace all placeholders (<api_url> and <api_key>) by specific value
+
+	We create a file with specific values - the map file (map.conf):
+
+		<api_url> = https://example.com
+		<api_key> = kksdfo93204jkljJKHJKsdf
+
+	Then we call remap:
+
+		remap map.conf file.conf
+
+	Result in stdout:
+
+		API_URL=https://example.com
+		API_KEY=kksdfo93204jkljJKHJKsdf
+
+	Remap just replaces all keys by it's values in a passed file.
 `,
 	Args: cobra.ExactArgs(2),
 	RunE: remap,
