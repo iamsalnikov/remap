@@ -10,10 +10,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Version of a program
+// Version is a version of a program
 var Version = "dev"
 
 var kvSep = "="
+
+var versionCmd = &cobra.Command{
+	Use:   "version",
+	Short: "Версия программы",
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Printf("Версия %s\n", Version)
+	},
+}
 
 var remapCmd = &cobra.Command{
 	Use:   "remap map file",
@@ -30,9 +38,8 @@ var remapCmd = &cobra.Command{
 	Здесь важно то, что ключ - это имя параметра, который нужно заменить.
 	Как ключ написан, так и будет производиться поиск. 
 `,
-	Version: Version,
-	Args:    cobra.ExactArgs(2),
-	RunE:    remap,
+	Args: cobra.ExactArgs(2),
+	RunE: remap,
 }
 
 func remap(cmd *cobra.Command, args []string) error {
@@ -82,5 +89,6 @@ func replace(r io.Reader, rep *strings.Replacer, w io.Writer) {
 }
 
 func main() {
+	remapCmd.AddCommand(versionCmd)
 	remapCmd.Execute()
 }

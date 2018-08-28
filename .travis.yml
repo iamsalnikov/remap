@@ -1,0 +1,39 @@
+language: go
+
+go:
+  - 1.9.x
+  - 1.10.x
+  - 1.11.x
+  - master
+
+before_script:
+  - go get -u github.com/golang/dep/cmd/dep
+
+script:
+  - make test
+
+before_deploy: 
+  - go get -u github.com/golang/dep/cmd/dep
+  - make dist VERSION="${TRAVIS_TAG:-latest}"
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_ACCESS_TOKEN
+  overwrite: true
+  skip_cleanup: true
+  file_glob: true
+  file:
+    - dist/remap-linux-amd64-*.tar.gz
+    - dist/remap-linux-i386-*.tar.gz
+    - dist/remap-linux-armel-*.tar.gz
+    - dist/remap-linux-armhf-*.tar.gz
+    - dist/remap-darwin-amd64-*.tar.gz
+    - dist/remap-darwin-i386-*.tar.gz
+    - dist/remap-windows-amd64-*.zip
+    - dist/remap-windows-i386-*.zip
+  on:
+    tags: true
+
+notifications:
+  email:
+on_success: never
